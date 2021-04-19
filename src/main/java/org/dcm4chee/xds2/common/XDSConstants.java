@@ -47,7 +47,7 @@ public interface XDSConstants {
     public static final String APND = "urn:ihe:iti:2007:AssociationType:APND"; //                                        ClassificationNode
     public static final String XFRM = "urn:ihe:iti:2007:AssociationType:XFRM"; //                                        ClassificationNode
     public static final String XFRM_RPLC = "urn:ihe:iti:2007:AssociationType:XFRM_RPLC"; //                                   ClassificationNode
-    public static final String SIGNS = "urn:ihe:iti:2007:AssociationType:signs"; //                                       ClassificationNode 
+    public static final String SIGNS =      "urn:ihe:iti:2007:AssociationType:signs"; //                                       ClassificationNode
 
     //Response stati 
     public static final String XDS_B_STATUS_SUCCESS = "urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success";

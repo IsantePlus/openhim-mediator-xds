@@ -7,6 +7,7 @@
 package org.openhim.mediator.messages;
 
 import akka.actor.ActorRef;
+import org.hl7.fhir.r4.model.Patient;
 import org.openhim.mediator.datatypes.Identifier;
 import org.openhim.mediator.engine.messages.MediatorRequestMessage;
 
@@ -23,6 +24,7 @@ public class RegisterNewPatient extends MediatorRequestMessage {
     private final String birthDate;
     private final String telecom;
     private final String languageCommunicationCode;
+    private final Patient fhirResource;
 
     public RegisterNewPatient(ActorRef requestHandler, ActorRef respondTo, List<Identifier> patientIdentifiers, String givenName, String familyName, String gender, String birthDate, String telecom, String languageCommunicationCode) {
         super(requestHandler, respondTo);
@@ -33,6 +35,22 @@ public class RegisterNewPatient extends MediatorRequestMessage {
         this.birthDate = birthDate;
         this.telecom = telecom;
         this.languageCommunicationCode = languageCommunicationCode;
+        this.fhirResource = null;
+    }
+
+    public RegisterNewPatient(ActorRef requestHandler, ActorRef respondTo,
+            List<Identifier> patientIdentifiers, String givenName, String familyName, String gender,
+            String birthDate,
+            String telecom, String languageCommunicationCode, Patient fhirResource) {
+        super(requestHandler, respondTo);
+        this.patientIdentifiers = patientIdentifiers;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.telecom = telecom;
+        this.languageCommunicationCode = languageCommunicationCode;
+        this.fhirResource = fhirResource;
     }
 
     public List<Identifier> getPatientIdentifiers() {
@@ -62,4 +80,7 @@ public class RegisterNewPatient extends MediatorRequestMessage {
     public String getLanguageCommunicationCode() {
         return languageCommunicationCode;
     }
+
+    public Patient getFhirResource() { return fhirResource; }
+
 }

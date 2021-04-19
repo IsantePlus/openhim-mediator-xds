@@ -1,0 +1,28 @@
+{
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "java.semanticHighlighting.enabled": true,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "C:\/Program Files\/Java\/jdk1.8.0_221"
+          },
+          {
+            "name": "JavaSE-11",
+            "path": "C:\/Program Files\/RedHat\/java-11-openjdk-11.0.7-1",
+            "default": true
+          },
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.home": "C:\/Program Files\/RedHat\/java-11-openjdk-11.0.7-1",
+    "yaml.schemas": {
+      "file:///c%3A/Users/k/.vscode/extensions/atlassian.atlascode-2.7.0/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+    }
+}

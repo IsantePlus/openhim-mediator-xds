@@ -125,7 +125,7 @@ public class FHIRRequestActor extends UntypedActor {
             org.hl7.fhir.r4.model.Patient admitMessage = msg.getFhirResource();
             IGenericClient client = getClient();
             MethodOutcome result = client.create().resource(admitMessage).execute();
-            msg.getRequestHandler().tell(new RegisterNewPatientResponse(msg, err == null, err), getSelf());
+            msg.getRequestHandler().tell(new RegisterNewPatientResponse(msg, result.getOperationOutcome() == null, ""), getSelf());
 
         } catch (FHIRException ex) {
             msg.getRequestHandler().tell(new ExceptError(ex), getSelf());

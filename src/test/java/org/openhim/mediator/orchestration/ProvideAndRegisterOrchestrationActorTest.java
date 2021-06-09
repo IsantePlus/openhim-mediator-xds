@@ -11,11 +11,11 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.testkit.JavaTestKit;
+import akka.testkit.TestActorRef;
 import ihe.iti.xds_b._2007.ProvideAndRegisterDocumentSetRequestType;
 import oasis.names.tc.ebxml_regrep.xsd.rim._3.ExtrinsicObjectType;
 import oasis.names.tc.ebxml_regrep.xsd.rim._3.RegistryPackageType;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpStatus;
 import org.dcm4chee.xds2.common.XDSConstants;
 import org.dcm4chee.xds2.infoset.util.InfosetUtil;
 import org.junit.AfterClass;
@@ -176,10 +176,12 @@ public class ProvideAndRegisterOrchestrationActorTest {
     }
 
     private void sendPnRMessage(MediatorConfig config, ActorSystem system, ActorRef ref, String resource) throws Exception {
+        TestActorRef<ProvideAndRegisterOrchestrationActor> actor = TestActorRef.create(system, Props.create(ProvideAndRegisterOrchestrationActor.class, config,resolvePIDDummy, resolveHWIDDummy, resolveFIDDummy, identityFeedDummy));
+
         InputStream testPnRIn = getClass().getClassLoader().getResourceAsStream(resource);
         final String testPnR = IOUtils.toString(testPnRIn);
 
-        ActorRef actor = system.actorOf(Props.create(ProvideAndRegisterOrchestrationActor.class, config, resolvePIDDummy, resolveHWIDDummy, resolveFIDDummy, identityFeedDummy));
+        // ActorRef actor = system.actorOf(Props.create(ProvideAndRegisterOrchestrationActor.class, config, resolvePIDDummy, resolveHWIDDummy, resolveFIDDummy, identityFeedDummy));
         OrchestrateProvideAndRegisterRequest testMsg = new OrchestrateProvideAndRegisterRequest(ref, ref, testPnR, null, null, null);
 
         actor.tell(testMsg, ref);
@@ -198,6 +200,24 @@ public class ProvideAndRegisterOrchestrationActorTest {
 
         new JavaTestKit(system) {{
             sendPnRMessage(system, getRef(), "pnr1.xml");
+            expectMsgClass(waitTime, OrchestrateProvideAndRegisterRequestResponse.class);
+            validateExpectedIdentifiersList(expectedPatientIds);
+        }};
+    }
+
+    @Test
+    public void shouldSendResolvePatientIDWithFhirRequests() throws Exception {
+        final List<DummyResolveIdentifierActor.ExpectedRequest> expectedPatientIds = new ArrayList<>();
+        expectedPatientIds.add(new DummyResolveIdentifierActor.ExpectedRequest(new Identifier("1111111111", new AssigningAuthority("", "1.2.3", "ISO"))));
+        expectedPatientIds.add(new DummyResolveIdentifierActor.ExpectedRequest(new Identifier("76cc765a442f410", new AssigningAuthority("", "1.3.6.1.4.1.21367.2005.3.7", "ISO"))));
+
+        setupResolvePatientIDMock(expectedPatientIds);
+        setupResolveHCWIDMock();
+        setupResolveFacilityIDMock();
+        setupIdentityFeedMock();
+
+        new JavaTestKit(system) {{
+            sendPnRMessage(system, getRef(), "pnr-with-fhir-resource.xml");
             expectMsgClass(waitTime, OrchestrateProvideAndRegisterRequestResponse.class);
             validateExpectedIdentifiersList(expectedPatientIds);
         }};

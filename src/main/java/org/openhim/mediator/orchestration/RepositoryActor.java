@@ -284,6 +284,7 @@ public class RepositoryActor extends UntypedActor {
     }
 
     private void finalizeResponse(MediatorHTTPResponse response) {
+        log.info("The lab document id is: " + labOrderDocumentId);
         if (StringUtil.isNotBlank(labOrderDocumentId)) {
             NotifyNewDocument msg = new NotifyNewDocument(labOrderDocumentId);
             dsubActor.tell(msg, getSelf());

@@ -97,7 +97,7 @@ public class PIXRequestActorTest {
 
     private void sendTestRequest(ActorRef ref, Class<? extends UntypedActor> handler) {
         TestingUtils.launchActors(system, testConfig.getName(), Collections.singletonList(new MockLauncher.ActorToLaunch("mllp-connector", handler)));
-        TestActorRef<PIXRequestActor> actor = TestActorRef.create(system, Props.create(PIXRequestActor.class, testConfig));
+        TestActorRef<FHIRRequestActor> actor = TestActorRef.create(system, Props.create(FHIRRequestActor.class, testConfig));
 
         Identifier fromId = new Identifier("1234", new AssigningAuthority("test-auth", "1.2.3", "ISO"));
         AssigningAuthority targetDomain = new AssigningAuthority("ECID", "ECID", "ECID");

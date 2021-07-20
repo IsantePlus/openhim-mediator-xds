@@ -220,19 +220,19 @@ public class FHIRRequestActor extends UntypedActor {
             patientResource = (org.hl7.fhir.r4.model.Patient) result.getResource();
         }
 
-        /*
-            TODO: Figure out the how to exclude the unique external identifier from the validation process
-            String id = "";
-            for (org.hl7.fhir.r4.model.Identifier identifier: patientResource.getIdentifier()) {
-                String identifierSystem = identifier.getSystem();
-                if ( identifierSystem != null && identifier.getSystem().equals(assigningAuthority)) {
-                    id = identifier.getValue();
-                    break;
-                }
+
+        // TODO: Figure out the how to exclude the unique external identifier from the validation process
+        String id = "";
+        for (org.hl7.fhir.r4.model.Identifier identifier: patientResource.getIdentifier()) {
+            String identifierSystem = identifier.getSystem();
+            if ( identifierSystem != null && identifier.getSystem().equals(assigningAuthority)) {
+                id = identifier.getValue();
+                break;
             }
-        */
-        // Identifier result = new Identifier(id, msg.getIdentifier().getAssigningAuthority());
-        Identifier result = originalRequest.getIdentifier();
+        }
+
+        Identifier result = new Identifier(id, originalRequest.getIdentifier().getAssigningAuthority());
+        // Identifier result = originalRequest.getIdentifier();
 
         log.info("Sending Patient Identifier Response");
         originalRequest.getRespondTo().tell(new ResolvePatientIdentifierResponse(originalRequest, result), getSelf());

@@ -19,10 +19,15 @@ import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 import org.openhim.mediator.engine.messages.SimpleMediatorResponse;
 import scala.concurrent.duration.Duration;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ParseProvideAndRegisterRequestActorTest {
 
@@ -54,4 +59,30 @@ public class ParseProvideAndRegisterRequestActorTest {
             assertTrue(SimpleMediatorResponse.isInstanceOf(ProvideAndRegisterDocumentSetRequestType.class, result));
         }};
     }
+
+    @Test
+    public void testParseMessage() throws Exception {
+        InputStream testPnRIn = getClass().getClassLoader().getResourceAsStream("pnrWithFhir.xml");
+        InputStream testPnROut = getClass().getClassLoader().getResourceAsStream("pnrWithFhirOut.xml");
+        assert testPnRIn != null;
+        final String testPnR = IOUtils.toString(testPnRIn);
+        final String testPnRExpectedOut = IOUtils.toString(testPnROut);
+
+        ProvideAndRegisterDocumentSetRequestType expectedRequest = stringToPnr(testPnRExpectedOut);
+
+        ProvideAndRegisterDocumentSetRequestType parsedRequest = ParseProvideAndRegisterRequestActor.parseRequest(testPnR);
+
+        assertEquals(expectedRequest.getDocument().size(), parsedRequest.getDocument().size());
+        assertEquals(expectedRequest.getSubmitObjectsRequest().getRegistryObjectList().getIdentifiable().size(),
+                parsedRequest.getSubmitObjectsRequest().getRegistryObjectList().getIdentifiable().size());
+    }
+
+    private ProvideAndRegisterDocumentSetRequestType stringToPnr (String document) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance("ihe.iti.xds_b._2007");
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        JAXBElement result = (JAXBElement)(unmarshaller.unmarshal(IOUtils.toInputStream(document)));
+
+        return (ProvideAndRegisterDocumentSetRequestType) result.getValue();
+    }
+
 }

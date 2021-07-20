@@ -8,7 +8,7 @@ import org.oasis_open.docs.wsn.b_2.NotificationMessageHolderType;
 
 public interface DsubService {
 
-    void createSubscription(String url, String facilityQuery, Date terminateAt);
+    void createSubscription(String url, String facilityQuery, Date terminateAt) throws RuntimeException;
 
     void deleteSubscription(String url);
 

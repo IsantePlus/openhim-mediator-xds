@@ -9,6 +9,9 @@ package org.openhim.mediator.normalization;
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import ihe.iti.xds_b._2007.ProvideAndRegisterDocumentSetRequestType;
+import oasis.names.tc.ebxml_regrep.xsd.rim._3.AssociationType1;
+import oasis.names.tc.ebxml_regrep.xsd.rim._3.ExtrinsicObjectType;
+import oasis.names.tc.ebxml_regrep.xsd.rim._3.IdentifiableType;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.openhim.mediator.engine.CoreResponse;
@@ -22,6 +25,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.util.Iterator;
 
 /**
  * Parses XDS.b Provide and Register Document Set transactions.
@@ -44,12 +48,66 @@ public class ParseProvideAndRegisterRequestActor extends UntypedActor {
 
 
     public static ProvideAndRegisterDocumentSetRequestType parseRequest(String document) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance("ihe.iti.xds_b._2007");
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        JAXBElement result = (JAXBElement)(unmarshaller.unmarshal(IOUtils.toInputStream(document)));
-        return (ProvideAndRegisterDocumentSetRequestType) result.getValue();
+        ProvideAndRegisterDocumentSetRequestType provideAndRegisterDocumentSetRequestType = removeFhirMetadata(
+                document);
+
+        return provideAndRegisterDocumentSetRequestType;
     }
 
+    private static ProvideAndRegisterDocumentSetRequestType removeFhirMetadata(String document)
+            throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance("ihe.iti.xds_b._2007");
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        JAXBElement result = (JAXBElement) (unmarshaller.unmarshal(IOUtils.toInputStream(document)));
+        ProvideAndRegisterDocumentSetRequestType provideAndRegisterDocumentSetRequestType = (ProvideAndRegisterDocumentSetRequestType) result
+                .getValue();
+
+        String idToRemove = getIdToRemove(provideAndRegisterDocumentSetRequestType);
+        for (Iterator<JAXBElement<? extends IdentifiableType>> object = provideAndRegisterDocumentSetRequestType
+                .getSubmitObjectsRequest()
+                .getRegistryObjectList().getIdentifiable().iterator(); object.hasNext();) {
+
+            JAXBElement jaxbElement = object.next();
+            IdentifiableType identifiable = (IdentifiableType) jaxbElement.getValue();
+
+            // Remove ExtrinsicObjects
+            if (identifiable instanceof ExtrinsicObjectType && identifiable.getId().equals(idToRemove)) {
+                object.remove();
+            }
+
+            // Remove associations
+            if (identifiable instanceof AssociationType1) {
+                AssociationType1 associationType1 = (AssociationType1) identifiable;
+                if (associationType1.getTargetObject().equals(idToRemove)) {
+                    object.remove();
+                }
+            }
+        }
+
+        // Remove document definitions
+        provideAndRegisterDocumentSetRequestType.getDocument().removeIf(d -> d.getId().equals(idToRemove));
+
+        return provideAndRegisterDocumentSetRequestType;
+    }
+
+    private static String getIdToRemove(ProvideAndRegisterDocumentSetRequestType provideAndRegisterDocumentSetRequestType1) {
+        String idToRemove = "";
+        for ( JAXBElement<? extends IdentifiableType> object : provideAndRegisterDocumentSetRequestType1.getSubmitObjectsRequest()
+                .getRegistryObjectList().getIdentifiable()) {
+            IdentifiableType identifiable = (IdentifiableType)((JAXBElement)object).getValue();
+
+            if (identifiable instanceof ExtrinsicObjectType) {
+                ExtrinsicObjectType id = (ExtrinsicObjectType) identifiable;
+                if (id.getMimeType().equalsIgnoreCase("TEXT/FHIR")) {
+                    idToRemove = identifiable.getId();
+                    break;
+                }
+            }
+        }
+
+        return idToRemove;
+
+    }
 
     private void processMsg(SimpleMediatorRequest<String> msg) {
         ActorRef requestHandler = msg.getRequestHandler();

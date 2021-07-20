@@ -17,11 +17,13 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.hl7v2.model.v25.message.ORM_O01;
 import ca.uhn.hl7v2.parser.PipeParser;
 import ca.uhn.hl7v2.util.StringUtil;
+import ihe.iti.xds_b._2007.ProvideAndRegisterDocumentSetRequestType;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
+import org.openhim.mediator.Util;
 import org.openhim.mediator.denormalization.CSDRequestActor;
 import org.openhim.mediator.denormalization.FHIRRequestActor;
 import org.openhim.mediator.denormalization.PIXRequestActor;
@@ -34,11 +36,13 @@ import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.messages.NotifyNewDocument;
 import org.openhim.mediator.messages.OrchestrateProvideAndRegisterRequest;
 import org.openhim.mediator.messages.OrchestrateProvideAndRegisterRequestResponse;
+import org.openhim.mediator.normalization.ParseProvideAndRegisterRequestActor;
 import org.openhim.mediator.normalization.SOAPWrapper;
 import org.openhim.mediator.normalization.XDSbMimeProcessorActor;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -251,6 +255,13 @@ public class RepositoryActor extends UntypedActor {
                 processProviderAndRegisterAction();
             } else {
                 messageBuffer = originalRequest.getBody();
+                try {
+                    ProvideAndRegisterDocumentSetRequestType provideAndRegisterDocumentSetRequestType = ParseProvideAndRegisterRequestActor.parseRequest(messageBuffer);
+                    messageBuffer = Util.marshallJAXBObject("ihe.iti.xds_b._2007", provideAndRegisterDocumentSetRequestType);
+                }
+                catch (JAXBException e) {
+                    log.info("Not a ProvideAndRegisterDocumentSetRequestType");
+                }
                 forwardRequestToRepository();
             }
         }

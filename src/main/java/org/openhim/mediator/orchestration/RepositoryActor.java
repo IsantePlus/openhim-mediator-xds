@@ -209,7 +209,8 @@ public class RepositoryActor extends UntypedActor {
         ActorRef resolvePatientIDHandler;
         ActorRef resolveHealthcareWorkerIDHandler = getContext().actorOf(Props.create(CSDRequestActor.class, config), "csd-denormalization");
         ActorRef resolveFacilityIDHandler = resolveHealthcareWorkerIDHandler;
-        if (fhirDocument != "") {
+        String patientValidator = config.getProperty("pnr.patients.validator");
+        if (patientValidator.equals("fhir")) {
             resolvePatientIDHandler = getContext().actorOf(Props.create(FHIRRequestActor.class, config), "fhir-denomalization");
         } else {
             resolvePatientIDHandler = getContext().actorOf(Props.create(PIXRequestActor.class, config), "pix-denormalization");

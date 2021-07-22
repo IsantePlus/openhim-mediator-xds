@@ -1,12 +1,19 @@
 package org.openhim.mediator.dsub.service;
 
 import akka.event.LoggingAdapter;
+import org.oasis_open.docs.wsn.b_2.CreatePullPoint;
+import org.oasis_open.docs.wsn.b_2.NotificationMessageHolderType;
+import org.oasis_open.docs.wsn.bw_2.UnableToGetMessagesFault;
+import org.oasis_open.docs.wsrf.rw_2.ResourceUnknownFault;
 import org.openhim.mediator.dsub.pull.PullPoint;
 import org.openhim.mediator.dsub.pull.PullPointFactory;
 import org.openhim.mediator.dsub.subscription.Subscription;
 import org.openhim.mediator.dsub.subscription.SubscriptionNotifier;
 import org.openhim.mediator.dsub.subscription.SubscriptionRepository;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -37,21 +44,8 @@ public class DsubServiceImpl implements DsubService {
                     terminateAt, facilityQuery);
             subscriptionRepository.saveSubscription(subscription);
         } else  {
-            throw new RuntimeException(String.format("Subscription %s already", url));
+            throw new RuntimeException(String.format("Subscription %s already exists", url));
         }
-    }
-
-    private boolean subscriptionExists(String url, String facilityQuery) {
-        Boolean exists = false;
-        List<Subscription> subscriptions = subscriptionRepository.findActiveSubscriptions(facilityQuery);
-        for (Subscription subscription: subscriptions) {
-            if (subscription.getUrl().equals(url)) {
-                exists = true;
-                break;
-            }
-        }
-
-        return exists;
     }
 
     @Override
@@ -68,7 +62,12 @@ public class DsubServiceImpl implements DsubService {
         log.info("Active subscriptions: {}", subscriptions.size());
         for (Subscription sub : subscriptions) {
             log.info("URL: {}", sub.getUrl());
-            subscriptionNotifier.notifySubscription(sub, docId);
+
+            try {
+                subscriptionNotifier.notifySubscription(sub, docId);
+            } catch (Exception ex) {
+                log.error("Error occured while sending notification. Unable to notify subscriber: " + sub.getUrl());
+            }
         }
     }
 
@@ -78,9 +77,45 @@ public class DsubServiceImpl implements DsubService {
         pullPoint.registerDocument(docId);
     }
 
-    @Override
-    public List<String> getDocumentsForPullPoint(String locationId) {
+	@Override
+	public void newDocumentForPullPoint(CreatePullPoint createPullPointRequest) {
+		String docId = createPullPointRequest.getAny().get(0).toString();
+		String hl7ORU_01 = createPullPointRequest.getOtherAttributes().get(new QName("hl7ORU_01"));
+		String locationId = createPullPointRequest.getOtherAttributes().get(new QName("facility"));
         PullPoint pullPoint = pullPointFactory.get(locationId);
-        return pullPoint.getDocumentIds();
+        pullPoint.registerDocument(docId, hl7ORU_01);
+
+	}
+
+    @Override
+    public List<NotificationMessageHolderType> getDocumentsForPullPoint(String facilityId, Integer maxMessages) {
+        PullPoint pullPoint = pullPointFactory.get(facilityId);
+        try {
+			return pullPoint.getMessages(maxMessages);
+		}
+		catch (UnableToGetMessagesFault | ResourceUnknownFault | ParserConfigurationException | UnsupportedEncodingException e) {
+			log.error("An error occured while trying to get documents for pullpoint", e);
+			e.printStackTrace();
+		}
+		return null;
     }
+
+    @Override
+    public Boolean subscriptionExists(String url, String facility) {
+        Boolean subscriptionFound = false;
+        List<Subscription> subscriptions = subscriptionRepository
+                .findActiveSubscriptions(facility);
+
+        log.info("Active subscriptions: {}", subscriptions.size());
+        for (Subscription sub : subscriptions) {
+            log.info("URL: {}", sub.getUrl());
+            if (url.equals(sub.getUrl())) {
+                subscriptionFound = true;
+                break;
+            }
+        }
+
+        return subscriptionFound;
+    }
+
 }

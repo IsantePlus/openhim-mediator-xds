@@ -12,5 +12,3 @@ services:
      - RESOURCE_LIST=Patient,Encounter,Observation
      - FHIR_SERVER_USERNAME=admin
      - FHIR_SERVER_PASSWORD=Admin123
-
-     

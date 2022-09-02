@@ -1,0 +1,37 @@
+version: '2.1'
+services:
+  batch:
+    build:
+      context: ../batch
+    image: openmrs-fhir-analytics/batch-job:latest
+    network_mode: host
+    container_name: batch-cloud
+    healthcheck:
+      test: "exit 0"
+    volumes:
+      - ../utils/dbz_event_to_fhir_config.json:/usr/src/Main/dbz_event_to_fhir_config.json
+      # data is the directory which you want to persist the generated parquet files
+      - ../data:/tmp
+    environment:
+     - FHIR_SERVER_URL=http://localhost:8099/openmrs/ws/fhir2/R4
+     - RESOURCE_LIST=Patient,Encounter,Observation
+     - FHIR_SERVER_USERNAME=admin
+     - FHIR_SERVER_PASSWORD=Admin123
+
+     - FHIR_DEBEZIUM_CONFIG_PATH=/usr/src/Main/dbz_event_to_fhir_config.json
+
+  streaming: # To run independently: docker-compose up --build streaming
+    build:
+      context: ../streaming
+    image: openmrs-fhir-analytics/streaming:latest
+    container_name: streaming-pipeline
+    network_mode: host
+    healthcheck:
+      test: "exit 0"
+    volumes:
+      - ../utils/dbz_event_to_fhir_config.json:/deployments/dbz_event_to_fhir_config.json
+      # data is the directory which you want to persist the generated parquet files
+      - ../data:/tmp
+    environment:
+      - FHIR_SERVER_URL=http://localhost:8099/openmrs/ws/fhir2/R4
+     

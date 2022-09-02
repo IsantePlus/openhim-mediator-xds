@@ -17,9 +17,8 @@ WORKDIR /
 # copy only the built jar and nothing else
 COPY --from=build /mediator-xds-1.0.3-jar-with-dependencies.jar /
 
-ENV VERSION=$VERSION
-ENV JAVA_OPTS=-Dspring.profiles.active=production
+ENV 
 
-EXPOSE 5000
+EXPOSE 
 
-ENTRYPOINT ["sh","-c","java -jar -mediator-xds-1.0.3-jar-with-dependencies.jar"]
+ENTRYPOINT 

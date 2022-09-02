@@ -1,10 +1,7 @@
 version: '1.0'
 services:
-    image:
-    network_mode: host
     container_name: xds-mediator
     volumes:
-      - ../utils/dbz_event_to_fhir_config.json:/usr/src/Main/dbz_event_to_fhir_config.json
       # data is the directory which you want to persist the generated parquet files
       - ../data:/tmp
     environment:

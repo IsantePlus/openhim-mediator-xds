@@ -8,14 +8,14 @@ VOLUME /tmp
 WORKDIR /
 ADD . .
 
-RUN ./gradlew --stacktrace clean test build
-RUN mv /$JAR_PATH /xds.jar
+RUN mvn install -DskipTests
+RUN mv /$JAR_PATH /mediator-xds-1.0.3-jar-with-dependencies.jar
 
 # package stage
 FROM openjdk:8-jdk-alpine
 WORKDIR /
 # copy only the built jar and nothing else
-COPY --from=build /xds.jar /
+COPY --from=build /mediator-xds-1.0.3-jar-with-dependencies.jar /
 
 ENV VERSION=$VERSION
 ENV JAVA_OPTS=-Dspring.profiles.active=production

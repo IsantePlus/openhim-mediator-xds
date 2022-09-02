@@ -1,11 +1,9 @@
 version: '1.0'
 services:
+    hostname: openhim-mediator-xds
     container_name: xds-mediator
     volumes:
       # data is the directory which you want to persist the generated parquet files
       - ../data:/tmp
     environment:
-     - FHIR_SERVER_URL=http://localhost:8099/openmrs/ws/fhir2/R4
-     - RESOURCE_LIST=Patient,Encounter,Observation
-     - FHIR_SERVER_USERNAME=admin
-     - FHIR_SERVER_PASSWORD=Admin123
+     - 

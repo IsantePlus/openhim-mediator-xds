@@ -22,4 +22,4 @@ ENV JAVA_OPTS=-Dspring.profiles.active=production
 
 EXPOSE 5000
 
-ENTRYPOINT ["sh","-c","java -jar -Dspring.profiles.active=production /app.jar"]
+ENTRYPOINT ["sh","-c","java -jar -mediator-xds-1.0.3-jar-with-dependencies.jar"]

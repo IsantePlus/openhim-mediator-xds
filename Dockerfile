@@ -16,9 +16,3 @@ FROM openjdk:8-jdk-alpine
 WORKDIR /
 # copy only the built jar and nothing else
 COPY --from=build /mediator-xds-1.0.3-jar-with-dependencies.jar /
-
-ENV 
-
-EXPOSE 
-
-ENTRYPOINT 

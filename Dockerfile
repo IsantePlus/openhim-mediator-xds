@@ -14,4 +14,4 @@ RUN mvn clean install -DskipTests
 
 COPY openhim-mediator-xds/target/mediator-xds-1.0.3-jar-with-dependencies.jar /
 
-ENTRYPOINT ["java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties"]
+ENTRYPOINT java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties

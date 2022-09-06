@@ -20,4 +20,5 @@ WORKDIR /
 COPY --from=build /mediator-xds-1.0.3-jar-with-dependencies /
 
 
-ENTRYPOINT java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties
+ENTRYPOINT ["java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties"] 
+

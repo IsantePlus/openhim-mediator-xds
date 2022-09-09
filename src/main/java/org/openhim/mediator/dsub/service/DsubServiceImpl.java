@@ -1,6 +1,9 @@
 package org.openhim.mediator.dsub.service;
 
 import akka.event.LoggingAdapter;
+
+import org.oasis_open.docs.wsn.b_2.CreatePullPoint;
+import org.oasis_open.docs.wsn.b_2.NotificationMessageHolderType;
 import org.openhim.mediator.dsub.pull.PullPoint;
 import org.openhim.mediator.dsub.pull.PullPointFactory;
 import org.openhim.mediator.dsub.subscription.Subscription;
@@ -41,7 +44,7 @@ public class DsubServiceImpl implements DsubService {
         }
     }
 
-    private boolean subscriptionExists(String url, String facilityQuery) {
+    public Boolean subscriptionExists(String url, String facilityQuery) {
         Boolean exists = false;
         List<Subscription> subscriptions = subscriptionRepository.findActiveSubscriptions(facilityQuery);
         for (Subscription subscription: subscriptions) {
@@ -78,9 +81,23 @@ public class DsubServiceImpl implements DsubService {
         pullPoint.registerDocument(docId);
     }
 
-    @Override
+    
     public List<String> getDocumentsForPullPoint(String locationId) {
         PullPoint pullPoint = pullPointFactory.get(locationId);
         return pullPoint.getDocumentIds();
+    }
+
+
+    @Override
+    public void newDocumentForPullPoint(CreatePullPoint createPullPointRequest) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public List<NotificationMessageHolderType> getDocumentsForPullPoint(String locationId, Integer max) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

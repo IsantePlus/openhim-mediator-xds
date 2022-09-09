@@ -1,8 +1,6 @@
 # build stage build the jar with all our resources
 FROM openjdk:8-jdk as build
 
-ARG JAR_PATH
-
 VOLUME /tmp
 WORKDIR /
 
@@ -12,6 +10,6 @@ RUN apt-get update
 RUN apt-get install -y maven
 RUN mvn clean install -DskipTests
 
-COPY openhim-mediator-xds/target/mediator-xds-1.0.3-jar-with-dependencies.jar /
+COPY . /target/mediator-xds-1.0.3-jar-with-dependencies.jar /
 
 ENTRYPOINT java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties

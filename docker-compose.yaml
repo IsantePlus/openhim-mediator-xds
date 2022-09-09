@@ -5,5 +5,5 @@ services:
     hostname: xds-mediator
     image: xds-mediator:latest
     volumes:
-      # data is the directory which you want to persist the generated parquet files
+      #data is the directory which you want to persist the generated parquet files
       - ../data:/tmp

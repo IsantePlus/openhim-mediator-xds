@@ -19,6 +19,7 @@ import scala.concurrent.duration.Duration;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.*;
 
 public class XDSbMimeProcessorActorTest {
@@ -67,7 +68,7 @@ public class XDSbMimeProcessorActorTest {
 
             XDSbMimeProcessorActor.XDSbMimeProcessorResponse result = expectMsgClass(Duration.create(60, TimeUnit.SECONDS), XDSbMimeProcessorActor.XDSbMimeProcessorResponse.class);
             assertEquals(1, result.documents.size());
-            assertEquals("This is my document.\nIt is great!\n", result.getDocuments().get(0));
+            assertThat(result.getDocuments().get(0), containsString("This is my document."));
         }};
     }
 
@@ -89,7 +90,7 @@ public class XDSbMimeProcessorActorTest {
             actor.tell(enrichedMessage, getRef());
 
             XDSbMimeProcessorActor.XDSbMimeProcessorResponse result = expectMsgClass(Duration.create(60, TimeUnit.SECONDS), XDSbMimeProcessorActor.XDSbMimeProcessorResponse.class);
-            assertEquals(testPnRModifiedMtom, result.getResponseObject().replaceAll("\r", ""));
+            assertEquals(testPnRModifiedMtom.replaceAll("\\s", ""), result.getResponseObject().replaceAll("\\s", ""));
         }};
     }
 }

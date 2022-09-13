@@ -170,6 +170,6 @@ public class RegistryActorTest {
     }
 
     public static String trimXML(String xml) {
-        return xml.replace("\n", "").replaceAll(">\\s*<", "><");
+        return xml.replaceAll("\\s","").replaceAll(">\\s*<", "><");
     }
 }

@@ -26,6 +26,7 @@ import org.openhim.mediator.messages.ResolveHealthcareWorkerIdentifierResponse;
 import scala.concurrent.duration.Duration;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -120,7 +121,7 @@ public class CSDRequestActorTest {
     @Before
     public void setUp() throws Exception {
         testConfig = new MediatorConfig();
-        testConfig.setName("csd-tests");
+        testConfig.setName("csd-tests-"+ UUID.randomUUID());
         testConfig.setProperties("mediator-unit-test.properties");
     }
 

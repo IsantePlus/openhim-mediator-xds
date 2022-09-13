@@ -1,15 +1,19 @@
 # build stage build the jar with all our resources
-FROM openjdk:8-jdk as build
+FROM maven:3.6-jdk-8 as build
 
-VOLUME /tmp
-WORKDIR /
+WORKDIR /app
 
-ADD . .
+ADD pom.xml ./
 
-RUN apt-get update
-RUN apt-get install -y maven
-RUN mvn clean install -DskipTests
+RUN mvn -pl verify
 
-COPY mediator-xds-1.0.3-jar-with-dependencies.jar /root/mediator-xds-1.0.3-jar-with-dependencies.jar
+ADD src ./
 
-ENTRYPOINT java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties
+RUN mvn clean package -DskipTests
+
+FROM openjdk:8-jdk as run
+
+COPY --from=build /app/target/mediator-xds-1.0.3-jar-with-dependencies.jar /mediator-xds-1.0.3-jar-with-dependencies.jar
+COPY --from=build /app/src/main/resources/mediator.properties /mediator.properties
+
+ENTRYPOINT java -jar /mediator-xds-1.0.3-jar-with-dependencies.jar --conf /mediator.properties

@@ -41,7 +41,7 @@ public class DsubServiceImpl implements DsubService {
             throw new RuntimeException(String.format("Subscription %s already", url));
         }
     }
-
+    
     public Boolean subscriptionExists(String url, String facilityQuery) {
         Boolean exists = false;
         List<Subscription> subscriptions = subscriptionRepository.findActiveSubscriptions(facilityQuery);

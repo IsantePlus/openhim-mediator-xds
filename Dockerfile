@@ -5,7 +5,7 @@ WORKDIR /app
 
 ADD pom.xml ./
 
-RUN mvn -pl verify
+RUN mvn verify
 
 ADD src ./
 

@@ -5,9 +5,11 @@ WORKDIR /app
 
 ADD pom.xml ./
 
-RUN mvn verify
+ADD src/main/resources ./src/main/resources
 
-ADD src ./
+RUN mvn verify --fail-never
+
+ADD src ./src
 
 RUN mvn clean package -DskipTests
 

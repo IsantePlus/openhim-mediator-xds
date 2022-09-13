@@ -10,6 +10,6 @@ RUN apt-get update
 RUN apt-get install -y maven
 RUN mvn clean install -DskipTests
 
-COPY ./target/mediator-xds-1.0.3-jar-with-dependencies.jar /root/mediator-xds-1.0.3-jar-with-dependencies.jar
+COPY mediator-xds-1.0.3-jar-with-dependencies.jar /root/mediator-xds-1.0.3-jar-with-dependencies.jar
 
 ENTRYPOINT java -jar mediator-xds-1.0.3-jar-with-dependencies.jar --conf mediator.properties

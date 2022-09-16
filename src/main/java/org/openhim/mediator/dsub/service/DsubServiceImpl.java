@@ -7,6 +7,7 @@ import org.openhim.mediator.dsub.subscription.Subscription;
 import org.openhim.mediator.dsub.subscription.SubscriptionNotifier;
 import org.openhim.mediator.dsub.subscription.SubscriptionRepository;
 
+
 import java.util.Date;
 import java.util.List;
 
@@ -40,8 +41,8 @@ public class DsubServiceImpl implements DsubService {
             throw new RuntimeException(String.format("Subscription %s already", url));
         }
     }
-
-    private boolean subscriptionExists(String url, String facilityQuery) {
+    
+    public Boolean subscriptionExists(String url, String facilityQuery) {
         Boolean exists = false;
         List<Subscription> subscriptions = subscriptionRepository.findActiveSubscriptions(facilityQuery);
         for (Subscription subscription: subscriptions) {
@@ -77,10 +78,10 @@ public class DsubServiceImpl implements DsubService {
         PullPoint pullPoint = pullPointFactory.get(locationId);
         pullPoint.registerDocument(docId);
     }
-
-    @Override
     public List<String> getDocumentsForPullPoint(String locationId) {
         PullPoint pullPoint = pullPointFactory.get(locationId);
         return pullPoint.getDocumentIds();
     }
+
+
 }

@@ -93,12 +93,15 @@ public class DsubUtilTest {
         MediatorHTTPRequest request = new MediatorHTTPRequest(null, null, null, null,
                 null, null, null, null, subscribeRequestBody, null, null);
         String result = DsubUtil.parseRequest(request);
-        Assert.assertEquals(parsedMessage, result);
+        Assert.assertEquals(trimXML(parsedMessage), trimXML(result));
     }
 
     @Test
     public void parseRequest() throws Exception {
         Object result = DsubUtil.extractRequestMessage(parsedMessage);
         Assert.assertTrue(result instanceof Subscribe);
+    }
+    public static String trimXML(String xml) {
+        return xml.replaceAll("\\s","").replaceAll(">\\s*<", "><");
     }
 }

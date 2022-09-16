@@ -64,6 +64,6 @@ public class EnrichRegistryStoredQueryActorTest {
      * Removes newlines and whitespace around tags
      */
     public static String trimXML(String xml) {
-        return xml.replace("\n", "").replaceAll(">\\s*<", "><");
+        return xml.replaceAll("\\s","").replaceAll(">\\s*<", "><");
     }
 }

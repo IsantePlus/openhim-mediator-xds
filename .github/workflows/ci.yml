@@ -21,8 +21,6 @@ env:
 jobs:
   maven-tests:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 8
@@ -37,6 +35,8 @@ jobs:
 
   docker-build-publish:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

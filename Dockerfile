@@ -7,7 +7,8 @@ ADD pom.xml ./
 
 ADD src/main/resources ./src/main/resources
 
-RUN mvn verify --fail-never
+RUN mvn verify --fail-never  
+
 
 ADD src ./src
 

@@ -65,4 +65,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=inline,ref=user/app:buildcache
-          cache-to: type=inline,ref=user/app:buildcache,mode=max 
+          cache-to: type=inline,ref=user/app:buildcache,mode=max

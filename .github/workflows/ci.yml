@@ -1,5 +1,4 @@
 # This is a basic workflow to help you get started with Actions
-
 name: CI
 # Controls when the action will run. 
 on:
@@ -65,4 +64,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=inline,ref=user/app:buildcache
-          cache-to: type=inline,ref=user/app:buildcache,mode=max 
+          cache-to: type=inline,ref=user/app:buildcache,mode=max

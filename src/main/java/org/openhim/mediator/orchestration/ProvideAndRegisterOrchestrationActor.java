@@ -386,8 +386,6 @@ public class ProvideAndRegisterOrchestrationActor extends UntypedActor {
         return classificationMaps;
     }
 
-
-
     private void resolveEnterpriseIdentifiers() {
         log.info("Resolving identifiers");
         resolvePatientIdentifiers();

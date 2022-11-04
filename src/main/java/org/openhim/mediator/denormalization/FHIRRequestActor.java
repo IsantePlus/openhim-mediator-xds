@@ -256,8 +256,8 @@ public class FHIRRequestActor extends UntypedActor {
             if (log.isDebugEnabled()) {
                 log.debug("Patient ID: " + ((ResolvePatientIdentifier) msg).getIdentifier());
             }
-            // sendFHIRRequest((ResolvePatientIdentifier) msg);
-            sendPIXRequest((ResolvePatientIdentifier) msg);
+            sendFHIRRequest((ResolvePatientIdentifier) msg);
+            // sendPIXRequest((ResolvePatientIdentifier) msg);
         } else if (msg instanceof RegisterNewPatient) {
             log.info("Received request to register new patient demographic record");
             sendFHIRRequest((RegisterNewPatient) msg);

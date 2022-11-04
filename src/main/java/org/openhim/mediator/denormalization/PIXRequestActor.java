@@ -282,10 +282,10 @@ public class PIXRequestActor extends UntypedActor {
             if (log.isDebugEnabled()) {
                 log.debug("Patient ID: " + ((ResolvePatientIdentifier) msg).getIdentifier());
             }
-            sendPIXRequest((ResolvePatientIdentifier) msg);
+            // sendPIXRequest((ResolvePatientIdentifier) msg);
         } else if (msg instanceof RegisterNewPatient) {
             log.info("Received request to register new patient demographic record");
-            sendPIXRequest((RegisterNewPatient) msg);
+            // sendPIXRequest((RegisterNewPatient) msg);
         } else if (msg instanceof MediatorSocketResponse) {
             processResponse((MediatorSocketResponse) msg);
         } else {

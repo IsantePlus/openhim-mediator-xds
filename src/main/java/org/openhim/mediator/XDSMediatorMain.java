@@ -90,8 +90,7 @@ public class XDSMediatorMain {
     }
 
     private static boolean isSecure(MediatorConfig config) {
-        return  (config.getProperty("pix.secure").equalsIgnoreCase("true")
-                || config.getProperty("xds.registry.secure").equalsIgnoreCase("true")
+        return  ( config.getProperty("xds.registry.secure").equalsIgnoreCase("true")
                 || config.getProperty("xds.repository.secure").equalsIgnoreCase("true")
                 || config.getProperty("atna.secure").equalsIgnoreCase("true"));
     }

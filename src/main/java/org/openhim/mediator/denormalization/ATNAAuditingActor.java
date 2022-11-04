@@ -328,10 +328,6 @@ public class ATNAAuditingActor extends UntypedActor {
 
     private String generateMesage(ATNAAudit audit) throws JAXBException {
         switch (audit.getType()) {
-            case PIX_REQUEST:
-                return generateForPIXRequest(audit);
-            case PIX_IDENTITY_FEED:
-                return generateForPIXIdentityFeed(audit);
             case REGISTRY_QUERY_RECEIVED:
                 return generateForRegistryQueryReceived(audit);
             case REGISTRY_QUERY_ENRICHED:

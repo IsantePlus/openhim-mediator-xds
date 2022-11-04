@@ -25,3 +25,9 @@ ATNA auditing is supported for requests.
 * `cd openhim-mediator-xds`
 * `mvn install`
 * `java -jar target/mediator-xds-1.0.3-jar-with-dependencies.jar`
+
+# Compiling and Running as a docker image
+```shell
+docker build ./ -t  ghcr.io/isanteplus/openhim-mediator-xds:local
+docker compose up -d 
+```

@@ -3,10 +3,26 @@ services:
   xds-mediator:
     container_name: xds-mediator
     hostname: xds-mediator
-    image: xds-mediator:latest
+    image: ghcr.io/isanteplus/openhim-mediator-xds:local
     ports:
       - "8050:8050"
       - "1044:1044"
     volumes:
-      #data is the directory which you want to persist the generated parquet files
-      - ../data:/tmp
+      - ./src/main/resources/mediator.properties:/mediator.properties
+    entrypoint: java -agentlib:jdwp=transport=dt_socket,address=1044,server=y,suspend=y -jar /mediator-xds-1.0.3-jar-with-dependencies.jar --conf /mediator.properties
+  openhim-core:
+    container_name: openhim-core
+    image: jembi/openhim-core:latest
+    restart: unless-stopped
+    environment:
+      mongo_url: "mongodb://mongo-db/openhim"
+      mongo_atnaUrl: "mongodb://mongo-db/openhim"
+      NODE_ENV: "development"
+    volumes:
+      - ./configs/openhim-core/healthcheck.js:/healthcheck.js
+  mongo-db:
+    container_name: mongo-db
+    image: mongo:3.4
+    volumes:
+      - "mongo-data:/data/db"
+    restart: unless-stopped

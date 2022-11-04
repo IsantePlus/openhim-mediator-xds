@@ -172,7 +172,7 @@ public class FHIRRequestActor extends UntypedActor {
 
             ActorSelection httpConnector = getContext().actorSelection(config.userPathFor("http-connector"));
             log.info("Sending http request to FHIR server");
-            httpConnector.tell(request, getSelf());
+            // httpConnector.tell(request, getSelf());
 
     }
 

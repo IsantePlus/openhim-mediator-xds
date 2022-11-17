@@ -3,10 +3,11 @@ services:
   xds-mediator:
     container_name: xds-mediator
     hostname: xds-mediator
-    image: xds-mediator:latest
+    image: ghcr.io/isanteplus/openhim-mediator-xds:local
     ports:
       - "8050:8050"
       - "1044:1044"
     volumes:
       #data is the directory which you want to persist the generated parquet files
-      - ../data:/tmp
+      - ./src/main/resources/mediator.properties:/mediator.properties
+    entrypoint: 'java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=1044 -jar /mediator-xds-1.0.3-jar-with-dependencies.jar --conf /mediator.properties'

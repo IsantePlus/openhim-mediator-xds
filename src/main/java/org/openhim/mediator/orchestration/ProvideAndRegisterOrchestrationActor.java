@@ -201,6 +201,8 @@ public class ProvideAndRegisterOrchestrationActor extends UntypedActor {
             initIdentifiersToBeResolvedMappings();
 
             Identifier cId = new Identifier(correlationId);
+            AssigningAuthority aa = new AssigningAuthority("http://openclientregistry.org/fhir/sourceid", "http://openclientregistry.org/fhir/sourceid");
+            cId.setAssigningAuthority(aa);
 
             for(IdentifierMapping mapping : enterprisePatientIds) {
                 mapping.correlationId = correlationId;

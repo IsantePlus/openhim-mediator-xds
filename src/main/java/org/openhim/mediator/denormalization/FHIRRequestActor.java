@@ -258,7 +258,7 @@ public class FHIRRequestActor extends UntypedActor {
                 log.debug("Patient ID: " + ((ResolvePatientIdentifier) msg).getIdentifier());
             }
             FinishRequest response = new FinishRequest("A message from my new mediator!", "text/plain", HttpStatus.SC_OK);
-            ((MediatorHTTPRequest) msg).getRequestHandler().tell(response, getSelf());
+            ((ResolvePatientIdentifier) msg).getRequestHandler().tell(response, getSelf());
         } else if (msg instanceof RegisterNewPatient) {
             log.info("Received request to register new patient demographic record");
             sendFHIRRequest((RegisterNewPatient) msg);

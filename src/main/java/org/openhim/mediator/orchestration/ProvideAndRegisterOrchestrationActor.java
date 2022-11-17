@@ -194,9 +194,12 @@ public class ProvideAndRegisterOrchestrationActor extends UntypedActor {
         log.info("Request parsed. Processing document");
         parsedRequest = doc;
         boolean outcome = true;
+        // Identifier cId = new Identifier();
         try {
             extractLabOrderDocumentId();
             initIdentifiersToBeResolvedMappings();
+            // originalRequest.getRespondTo().tell(new ResolvePatientIdentifierResponse(originalRequest, result), getSelf());
+
             // if (!checkAndRespondIfAllResolved()) {
             //     resolveEnterpriseIdentifiers();
             // }

@@ -194,15 +194,20 @@ public class ProvideAndRegisterOrchestrationActor extends UntypedActor {
         log.info("Request parsed. Processing document");
         parsedRequest = doc;
         boolean outcome = true;
-        // Identifier cId = new Identifier();
+        String correlationId = UUID.randomUUID().toString();
+
         try {
             extractLabOrderDocumentId();
             initIdentifiersToBeResolvedMappings();
-            // originalRequest.getRespondTo().tell(new ResolvePatientIdentifierResponse(originalRequest, result), getSelf());
 
-            // if (!checkAndRespondIfAllResolved()) {
-            //     resolveEnterpriseIdentifiers();
-            // }
+            Identifier cId = new Identifier(correlationId);
+
+            for(IdentifierMapping mapping : enterprisePatientIds) {
+                mapping.correlationId = correlationId;
+            }
+
+            enrichResolvedId(cId, correlationId, enterprisePatientIds);
+
             try {
                 respondSuccess();
             } catch (JAXBException ex) {
@@ -477,6 +482,13 @@ public class ProvideAndRegisterOrchestrationActor extends UntypedActor {
         }
     }
 
+    private void enrichResolvedId(Identifier id, String cId, List<IdentifierMapping> lst) {
+        for (IdentifierMapping mapping : lst) {
+            if (mapping.correlationId.equals(cId)) {
+                mapping.resolve(id);
+            }
+        }
+    }
 
     private List<Identifier> getAllKnownPatientIdentifiers() {
         List<Identifier> result = new LinkedList<>();

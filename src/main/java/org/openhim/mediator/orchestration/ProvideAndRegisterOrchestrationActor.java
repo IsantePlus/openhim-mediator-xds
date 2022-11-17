@@ -197,9 +197,15 @@ public class ProvideAndRegisterOrchestrationActor extends UntypedActor {
         try {
             extractLabOrderDocumentId();
             initIdentifiersToBeResolvedMappings();
-            if (!checkAndRespondIfAllResolved()) {
-                resolveEnterpriseIdentifiers();
+            // if (!checkAndRespondIfAllResolved()) {
+            //     resolveEnterpriseIdentifiers();
+            // }
+            try {
+                respondSuccess();
+            } catch (JAXBException ex) {
+                respondBadRequest(ex);
             }
+
         } catch (ValidationException ex) {
             respondBadRequest(ex);
             outcome = false;

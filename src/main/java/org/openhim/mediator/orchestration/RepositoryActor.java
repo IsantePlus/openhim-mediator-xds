@@ -297,6 +297,7 @@ public class RepositoryActor extends UntypedActor {
     private void finalizeResponse(MediatorHTTPResponse response) {
         log.info("The lab document id is: " + labOrderDocumentId);
         if (StringUtil.isNotBlank(labOrderDocumentId)) {
+            log.info("Notifying DBUS {}", labOrderDocumentId);            
             NotifyNewDocument msg = new NotifyNewDocument(labOrderDocumentId);
             dsubActor.tell(msg, getSelf());
         }
@@ -314,6 +315,7 @@ public class RepositoryActor extends UntypedActor {
         } else if (msg instanceof OrchestrateProvideAndRegisterRequestResponse) {
             processProvideAndRegisterResponse((OrchestrateProvideAndRegisterRequestResponse) msg);
         } else if (msg instanceof MediatorHTTPResponse) {
+            log.info("Finalizing response");            
             finalizeResponse((MediatorHTTPResponse) msg);
         } else {
             unhandled(msg);

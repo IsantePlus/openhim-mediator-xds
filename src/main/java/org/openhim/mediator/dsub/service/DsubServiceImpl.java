@@ -57,7 +57,12 @@ public class DsubServiceImpl implements DsubService {
         log.info("Active subscriptions: {}", subscriptions.size());
         for (Subscription sub : subscriptions) {
             log.info("URL: {}", sub.getUrl());
-            subscriptionNotifier.notifySubscription(sub, docId);
+
+            try {
+                subscriptionNotifier.notifySubscription(sub, docId);
+            } catch (Exception ex) {
+                log.error("Error occured while sending notification. Unable to notify subscriber: " + sub.getUrl());
+            }
         }
     }
 

@@ -33,26 +33,14 @@ public class DsubServiceImpl implements DsubService {
     public void createSubscription(String url, String facilityQuery, Date terminateAt) throws RuntimeException {
         log.info("Request to create subscription for: " + url);
 
-        if (subscriptionExists(url,facilityQuery) == false) {
-            Subscription subscription = new Subscription(url,
-                    terminateAt, facilityQuery);
-            subscriptionRepository.saveSubscription(subscription);
-        } else  {
-            throw new RuntimeException(String.format("Subscription %s already", url));
-        }
-    }
-    
-    public Boolean subscriptionExists(String url, String facilityQuery) {
-        Boolean exists = false;
-        List<Subscription> subscriptions = subscriptionRepository.findActiveSubscriptions(facilityQuery);
-        for (Subscription subscription: subscriptions) {
-            if (subscription.getUrl().equals(url)) {
-                exists = true;
-                break;
-            }
-        }
+        Subscription subscription = new Subscription(url,
+                terminateAt, facilityQuery);
 
-        return exists;
+        if (subscriptionExists(url, facilityQuery) == false) {
+            subscriptionRepository.saveSubscription(subscription);            
+        } else {
+            log.error("unable to create subscription. Another one already exists for: " + url);
+        }
     }
 
     @Override
@@ -83,5 +71,21 @@ public class DsubServiceImpl implements DsubService {
         return pullPoint.getDocumentIds();
     }
 
+    @Override
+    public Boolean subscriptionExists(String url, String facility) {
+        Boolean subcriptionFound = false;
+        List<Subscription> subscriptions = subscriptionRepository
+                .findActiveSubscriptions(facility);
 
+        log.info("Active subscriptions: {}", subscriptions.size());
+        for (Subscription sub : subscriptions) {
+            log.info("URL: {}", sub.getUrl());
+            if (url.equals(sub.getUrl())) {
+                subcriptionFound = true;
+                break;
+            }
+        }
+
+        return subcriptionFound;
+    }
 }

@@ -13,5 +13,7 @@ public interface DsubService {
 
     void newDocumentForPullPoint(String docId, String facilityId);
 
+    List<String> getDocumentsForPullPoint(String facilityId);
+
     Boolean subscriptionExists(String url, String facility);
 }

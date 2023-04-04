@@ -1,6 +1,15 @@
 package org.openhim.mediator.dsub.service;
 
-import akka.event.LoggingAdapter;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.oasis_open.docs.wsn.b_2.CreatePullPoint;
+import org.oasis_open.docs.wsn.b_2.NotificationMessageHolderType;
+import org.oasis_open.docs.wsn.bw_2.UnableToGetMessagesFault;
+import org.oasis_open.docs.wsrf.rw_2.ResourceUnknownFault;
 import org.openhim.mediator.dsub.pull.PullPoint;
 import org.openhim.mediator.dsub.pull.PullPointFactory;
 import org.openhim.mediator.dsub.subscription.Subscription;
@@ -10,6 +19,7 @@ import org.openhim.mediator.dsub.subscription.SubscriptionRepository;
 
 import java.util.Date;
 import java.util.List;
+import akka.event.LoggingAdapter;
 
 public class DsubServiceImpl implements DsubService {
 
@@ -71,9 +81,28 @@ public class DsubServiceImpl implements DsubService {
         PullPoint pullPoint = pullPointFactory.get(locationId);
         pullPoint.registerDocument(docId);
     }
-    public List<String> getDocumentsForPullPoint(String locationId) {
+
+	@Override
+	public void newDocumentForPullPoint(CreatePullPoint createPullPointRequest) {
+		String docId = createPullPointRequest.getAny().get(0).toString();
+		String hl7ORU_01 = createPullPointRequest.getOtherAttributes().get(new QName("hl7ORU_01"));
+		String locationId = createPullPointRequest.getOtherAttributes().get(new QName("facility"));
         PullPoint pullPoint = pullPointFactory.get(locationId);
-        return pullPoint.getDocumentIds();
+        pullPoint.registerDocument(docId, hl7ORU_01);
+		
+	}
+    
+    @Override
+    public List<NotificationMessageHolderType> getDocumentsForPullPoint(String facilityId, Integer maxMessages) {
+        PullPoint pullPoint = pullPointFactory.get(facilityId);
+        try {
+			return pullPoint.getMessages(maxMessages);
+		}
+		catch (UnableToGetMessagesFault | ResourceUnknownFault | ParserConfigurationException e) {
+			log.error("An error occured while trying to get documents for pullpoint", e);
+			e.printStackTrace();
+		}
+		return null;
     }
 
     @Override
@@ -93,4 +122,5 @@ public class DsubServiceImpl implements DsubService {
 
         return subcriptionFound;
     }
+
 }

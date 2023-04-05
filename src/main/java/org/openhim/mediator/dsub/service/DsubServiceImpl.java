@@ -1,5 +1,6 @@
 package org.openhim.mediator.dsub.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -98,11 +99,11 @@ public class DsubServiceImpl implements DsubService {
         try {
 			return pullPoint.getMessages(maxMessages);
 		}
-		catch (UnableToGetMessagesFault | ResourceUnknownFault | ParserConfigurationException e) {
+		catch (UnableToGetMessagesFault | ResourceUnknownFault | ParserConfigurationException | UnsupportedEncodingException e) {
 			log.error("An error occured while trying to get documents for pullpoint", e);
 			e.printStackTrace();
 		}
-		return null;
+        return null;
     }
 
     @Override

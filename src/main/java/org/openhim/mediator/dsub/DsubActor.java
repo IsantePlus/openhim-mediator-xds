@@ -104,7 +104,9 @@ public class DsubActor extends UntypedActor {
 		Object result = parseMessage(request);
 		
 		if (result instanceof Subscribe) {
-            try {
+			Subscribe subscribeRequest = (Subscribe) result;
+
+			try {
                 handleSubscriptionMessage(subscribeRequest);
                 MediatorHTTPResponse creationSuccess = new MediatorHTTPResponse(request,
                         "Subscription created with success",

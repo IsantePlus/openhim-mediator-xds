@@ -13,6 +13,6 @@ ADD src ./src
 RUN mvn -DskipTests clean package
 
 FROM openjdk:8-jdk as run
-COPY --from=build /app/target/mediator-xds-1.0.5-jar-with-dependencies.jar /mediator-xds-1.0.5-jar-with-dependencies.jar
+COPY --from=build /app/target/mediator-xds-1.1.0-SNAPSHOT-jar-with-dependencies.jar /mediator-xds-1.1.0-SNAPSHOT-jar-with-dependencies.jar
 COPY --from=build /app/src/main/resources/mediator.properties /mediator.properties
-ENTRYPOINT java -jar /mediator-xds-1.0.5-jar-with-dependencies.jar --conf /mediator.properties
+ENTRYPOINT java -jar /mediator-xds-1.1.0-SNAPSHOT-jar-with-dependencies.jar --conf /mediator.properties

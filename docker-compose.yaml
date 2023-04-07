@@ -10,4 +10,4 @@ services:
     volumes:
       #data is the directory which you want to persist the generated parquet files
       - ./src/main/resources/mediator.properties:/mediator.properties
-    entrypoint: 'java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=1044 -jar /mediator-xds-1.0.5-jar-with-dependencies.jar --conf /mediator.properties'
+    entrypoint: 'java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=1044 -jar /mediator-xds-1.1.0-SNAPSHOT-jar-with-dependencies.jar --conf /mediator.properties'

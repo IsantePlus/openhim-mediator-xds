@@ -202,13 +202,14 @@ public class RepositoryActor extends UntypedActor {
 		log.info("Parsing the message {}", message);
 		try {
 			PipeParser pipeParser = new PipeParser();
-			// ORU_R01 oru_r01 = new ORU_R01();
-			// pipeParser.parse(oru_r01, message);
-			ORU_R01 msg = (ORU_R01)pipeParser.doParse(message, "2.5");
-			//ORU_R01 msg = (ORU_R01) pipeParser.parse(message);
+
+			ORU_R01 msg = (ORU_R01)pipeParser.parse(message.replaceAll("\\n","\r"));
+
 			log.info("Message is a lab result", message);
 			log.info(msg.toString());
 		}
+
+
 		catch (Exception ex) {
 			log.info("Message not a lab result", message);
 			log.info("Parsing error is: {}", ex.getMessage().toString());

@@ -4,6 +4,8 @@ services:
     container_name: xds-mediator
     hostname: xds-mediator
     image: ghcr.io/isanteplus/openhim-mediator-xds:local
+    build:
+      context: .
     ports:
       - "8050:8050"
       - "1044:1044"
